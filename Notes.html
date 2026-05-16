@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notes App</title>
+    <link rel="stylesheet" href="Notess.css" />
+  </head>
+
+  <body>
+    <div id="totalDisplay">
+
+      <!-- LEFT PANEL -->
+      <div id="notesListid">
+
+        <div id="addSectionid">
+          <h2>Add Note</h2>
+
+          <label>Title</label>
+          <input type="text" id="titleid" />
+
+          <label>Description</label>
+          <textarea id="noteDescid" rows="6"></textarea>
+
+          <button id="addNoteid">Add Note</button>
+        </div>
+
+        <div id="notesContainer">
+          <h2>Your Notes</h2>
+
+          <ol id="olid">
+            <!-- Notes will appear here -->
+          </ol>
+        </div>
+      </div>
+
+
+      <!-- RIGHT PANEL -->
+      <div id="notedisplayid">
+
+        <input id="edittitle" placeholder="Title" />
+
+        <textarea
+          id="editcontent"
+          rows="15"
+          placeholder="Note content"
+        ></textarea>
+
+        <div id="optionsid">
+          <button id="saveBtn">Save Note</button>
+          <button id="deleteBtn">Delete Note</button>
+        </div>
+      </div>
+
+    </div>
+
+
+    <script>
+
+      let notesList = JSON.parse(localStorage.getItem("notes")) || [];
+
+      let selectedNoteId = JSON.parse(
+        localStorage.getItem("selectedNote")
+      );
+
+
+
+      const addBtnElement = document.getElementById("addNoteid");
+
+      const addTitleInput = document.getElementById("titleid");
+
+      const addContentInput = document.getElementById("noteDescid");
+
+      const notesListElement = document.getElementById("olid");
+
+      const editTitleInput = document.getElementById("edittitle");
+
+      const editContentInput = document.getElementById("editcontent");
+
+      const saveBtnElement = document.getElementById("saveBtn");
+
+      const deleteBtnElement = document.getElementById("deleteBtn");
+
+
+
+      function saveLocalStorage() {
+        localStorage.setItem(
+          "notes",
+          JSON.stringify(notesList)
+        );
+
+        localStorage.setItem(
+          "selectedNote",
+          JSON.stringify(selectedNoteId)
+        );
+      }
+
+
+      function renderLeft() {
+
+        notesListElement.innerHTML = "";
+
+        notesList.forEach((note) => {
+
+          const li = document.createElement("li");
+
+          li.dataset.id = note.id;
+
+          if (note.id === selectedNoteId) {
+            li.classList.add("activeNote");
+          }
+
+
+          // title
+          const titleSpan = document.createElement("span");
+
+          titleSpan.textContent = note.title;
+          titleSpan.style.display = "block";
+          titleSpan.style.fontWeight = "bold";
+          titleSpan.style.color = "green";
+          titleSpan.classList.add("noteTitle");
+
+
+          const previewSpan = document.createElement("span");
+
+          const firstLine = note.content.split("\n")[0];
+
+          previewSpan.textContent = firstLine;
+
+          previewSpan.classList.add("notePreview");
+
+
+          li.appendChild(titleSpan);
+          li.appendChild(previewSpan);
+
+          notesListElement.appendChild(li);
+        });
+      }
+
+
+
+      function renderRight() {
+
+        if (selectedNoteId === null) {
+
+          editTitleInput.value = "";
+
+          editContentInput.value = "No note selected";
+
+          return;
+        }
+
+
+        const note = notesList.find(
+          (note) => note.id === selectedNoteId
+        );
+
+
+        if (!note) {
+
+          editTitleInput.value = "";
+
+          editContentInput.value = "Note not found";
+
+          return;
+        }
+
+
+        editTitleInput.value = note.title;
+
+        editContentInput.value = note.content;
+      }
+
+      addBtnElement.addEventListener("click", function () {
+
+        const title = addTitleInput.value.trim();
+
+        const content = addContentInput.value.trim();
+
+
+        if (title === "" || content === "") {
+          alert("Title and content required");
+          return;
+        }
+
+
+        const newNote = {
+          id: Date.now(),
+          title: title,
+          content: content,
+        };
+
+
+        notesList.push(newNote);
+
+        selectedNoteId = newNote.id;
+
+
+        addTitleInput.value = "";
+        addContentInput.value = "";
+
+
+        saveLocalStorage();
+
+        renderLeft();
+        renderRight();
+      });
+
+
+      notesListElement.addEventListener("click", function (e) {
+
+        const li = e.target.closest("li");
+
+        if (!li) {
+          return;
+        }
+
+
+        const id = Number(li.dataset.id);
+
+        selectedNoteId = id;
+
+
+        saveLocalStorage();
+
+        renderLeft();
+        renderRight();
+      });
+
+
+      saveBtnElement.addEventListener("click", function () {
+
+        const note = notesList.find(
+          (note) => note.id === selectedNoteId
+        );
+
+
+        if (!note) {
+          return;
+        }
+
+
+        const updatedTitle = editTitleInput.value.trim();
+
+        const updatedContent = editContentInput.value.trim();
+
+
+        if (updatedTitle === "" || updatedContent === "") {
+          alert("Fields cannot be empty");
+          return;
+        }
+
+
+        note.title = updatedTitle;
+
+        note.content = updatedContent;
+
+
+        saveLocalStorage();
+
+        renderLeft();
+        renderRight();
+      });
+
+      deleteBtnElement.addEventListener("click", function () {
+
+        if (selectedNoteId === null) {
+          return;
+        }
+
+
+        const res = confirm(
+          "Do you really want to delete this note?"
+        );
+
+
+        if (!res) {
+          return;
+        }
+
+
+        notesList = notesList.filter(
+          (note) => note.id !== selectedNoteId
+        );
+
+
+        selectedNoteId = null;
+
+
+        saveLocalStorage();
+
+        renderLeft();
+        renderRight();
+      });
+
+      renderLeft();
+      renderRight();
+
+    </script>
+  </body>
+</html>
