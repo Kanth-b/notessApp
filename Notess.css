@@ -1,0 +1,107 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #f5f5f5;
+}
+
+#totalDisplay {
+  display: flex;
+  gap: 20px;
+  height: 90vh;
+}
+
+/* LEFT PANEL */
+
+#notesListid {
+  width: 35%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+#addSectionid {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+}
+
+#titleid,
+#noteDescid,
+#edittitle,
+#editcontent {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  font-size: 15px;
+}
+
+#noteDescid {
+  resize: vertical;
+}
+
+#addNoteid {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* NOTES LIST */
+
+#olid {
+  padding-left: 0;
+}
+
+#olid li {
+  list-style: none;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid lightgray;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #fafafa;
+}
+
+#olid li:hover {
+  background-color: #eeeeee;
+}
+
+/* RIGHT PANEL */
+
+#notedisplayid {
+  width: 65%;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+#editcontent {
+  flex: 1;
+  resize: none;
+}
+
+/* BUTTONS */
+
+#optionsid {
+  display: flex;
+  gap: 10px;
+}
+
+#saveBtn,
+#deleteBtn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
